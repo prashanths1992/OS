@@ -1,0 +1,40 @@
+Features :-
+1. Warm up:- Kernel printf, Timer, Keyboard, GDT, IDT, handlers, 64-bit OS
+2. Physical Memory, Virtual Memory, Mapping
+3. 4-Level Paging, CR3 setup, Ring 0-Ring 3 switch
+4.  Process management, COW fork, preemptive scheduling, Signal Handlers
+5. Tarfs and Elf Loading
+6. System Calls: read, write, sbrk, exit, sleep, fork, wait, waiting_with_pid, exec
+7. Binaries: ls, pwd, sleep, shell 
+8. FileSystems :-  PCI and AHCI initialization..
+
+References Used :-
+1. Osdevwiki and Forum
+2. AMD64 Architecture Programmer's Manual Volume 2: System Programming
+3. BROKENTHORN
+
+Special Thanks to Professor Mike Ferdman, Stony Brook University.
+
+* The provided Makefile:
+  1) builds a kernel
+  2) copies it into rootfs/boot/kernel/kernel
+  3) creates an ISO CD image with the rootfs/ contents
+
+* To boot the system in QEMU, run:
+qemu-system-x86_64 -curses -drive id=boot,format=raw,file=$USER.img,if=none -drive id=data,format=raw,file=$USER-data.img,if=none -device ahci,id=ahci -device ide-drive,drive=boot,bus=ahci.0 -device ide-drive,drive=data,bus=ahci.1 -gdb tcp::9999
+
+Explanation of parameters:
+  -curses         use a text console (omit this to use default SDL/VNC console)
+  -drive ...      connect a CD-ROM or hard drive with corresponding image
+  -device ...     configure an AHCI controller for the boot and data disks
+  -gdb tcp::9999  listen for "remote" debugging connections on port NNNN
+  -S              wait for GDB to connect at startup
+  -no-reboot      prevent reboot when OS crashes
+
+* When using the -curses mode, switch to the qemu> console with ESC-2.
+
+* To connect a remote debugger to the running qemu VM, from a different window:
+gdb ./kernel
+
+At the (gdb) prompt, connect with:
+target remote localhost:9999
